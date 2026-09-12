@@ -65,34 +65,16 @@
     },
     {
       "pluginId": "fluxdown@bilibili-bangumi",
-      "version": "0.1.0",
-      "sequence": 4,
-      "contentHash": "sha256:af6bcf5f7b66cc8b9d15697849b2c9afde87e38324af4a7910681e9f0684fe10",
-      "minAppVersion": "0.1.44",
-      "name": "Bilibili 番剧分集下载",
-      "description": "独立的 B 站番剧插件：从番剧链接读取正片分集清单，按集解析真实视频流并交回 FluxDown 下载。",
-      "author": "gulanthys",
-      "homepage": "https://github.com/gulanthys/FluxDown-plugin",
-      "mirrors": [
-        "https://github.com/gulanthys/FluxDown-plugin/blob/master/dist/bilibili-bangumi-0.1.0.fxplug"
-      ],
-      "publishTime": "2026-09-12T00:00:00.000Z",
-      "permissions": []
-    },
-    {
-      "pluginId": "fluxdown@bilibili-bangumi",
       "version": "0.1.2",
       "sequence": 5,
       "contentHash": "sha256:ec409692f63032857949bc89b97beb8b56fbe3fbd968975d16fbc794a1acfcf2",
       "minAppVersion": "0.1.44",
       "name": "Bilibili 番剧分集下载",
-      "description": "独立的 B 站番剧插件：支持 ss/ep 番剧链接，按实际返回的质量码展开分集，并在下载阶段重新获取短期媒体地址。",
+      "description": "B 站番剧插件：支持 ss/ep 番剧链接，按实际返回的质量码展开分集，并在下载阶段重新获取短期媒体地址。",
       "author": "gulanthys",
       "homepage": "https://github.com/gulanthys/FluxDown-plugin",
       "mirrors": [
-        "https://raw.githubusercontent.com/gulanthys/FluxDown-plugin/master/dist/bilibili-bangumi-0.1.2.fxplug",
-        "https://raw.githubusercontent.com/gulanthys/fluxdown-plugin-index/plugin/bilibili-subscription/dist/bilibili-bangumi-0.1.2.fxplug",
-        "https://cdn.jsdelivr.net/gh/gulanthys/fluxdown-plugin-index@plugin/bilibili-subscription/dist/bilibili-bangumi-0.1.2.fxplug"
+        "https://raw.githubusercontent.com/gulanthys/FluxDown-plugin/master/dist/bilibili-bangumi-0.1.2.fxplug"
       ],
       "publishTime": "2026-09-13T00:00:00.000Z",
       "permissions": [],
