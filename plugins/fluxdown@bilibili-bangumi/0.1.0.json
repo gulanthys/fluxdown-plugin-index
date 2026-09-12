@@ -2,7 +2,7 @@
   "pluginId": "fluxdown@bilibili-bangumi",
   "version": "0.1.0",
   "sequence": 4,
-  "contentHash": "sha256:a03cd281d611ca4539d24905d81a0686954973b575ecf3538cc05c8ec2154664",
+  "contentHash": "sha256:af6bcf5f7b66cc8b9d15697849b2c9afde87e38324af4a7910681e9f0684fe10",
   "minAppVersion": "0.1.44",
   "name": "Bilibili 番剧分集下载",
   "description": "独立的 B 站番剧插件：从番剧链接读取正片分集清单，按集解析真实视频流并交回 FluxDown 下载。",

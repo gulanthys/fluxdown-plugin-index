@@ -72,9 +72,9 @@
       "name": "Bilibili 番剧分集下载",
       "description": "独立的 B 站番剧插件：从番剧链接读取正片分集清单，按集解析真实视频流并交回 FluxDown 下载。",
       "author": "gulanthys",
-      "homepage": "https://fluxdown.zerx.dev",
+      "homepage": "https://github.com/gulanthys/FluxDown-plugin",
       "mirrors": [
-        "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/main/dist/bilibili-bangumi-0.1.0.fxplug"
+        "https://github.com/gulanthys/FluxDown-plugin/blob/master/dist/bilibili-bangumi-0.1.0.fxplug"
       ],
       "publishTime": "2026-09-12T00:00:00.000Z",
       "permissions": []
