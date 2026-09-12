@@ -1,7 +1,7 @@
 {
   "indexId": "252c2b9e-c113-42d2-b1b5-3bf8bdb01866",
-  "sequence": 3,
-  "updated": "2026-07-17T00:00:00.000Z",
+  "sequence": 4,
+  "updated": "2026-09-12T00:00:00.000Z",
   "entries": [
     {
       "pluginId": "fluxdown@ytdlp",
@@ -62,6 +62,22 @@
       "permissions": [],
       "sigScheme": "none",
       "sigstoreBundleRef": ""
+    },
+    {
+      "pluginId": "fluxdown@bilibili-bangumi",
+      "version": "0.1.0",
+      "sequence": 4,
+      "contentHash": "sha256:a03cd281d611ca4539d24905d81a0686954973b575ecf3538cc05c8ec2154664",
+      "minAppVersion": "0.1.44",
+      "name": "Bilibili 番剧分集下载",
+      "description": "独立的 B 站番剧插件：从番剧链接读取正片分集清单，按集解析真实视频流并交回 FluxDown 下载。",
+      "author": "gulanthys",
+      "homepage": "https://fluxdown.zerx.dev",
+      "mirrors": [
+        "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/main/dist/bilibili-bangumi-0.1.0.fxplug"
+      ],
+      "publishTime": "2026-09-12T00:00:00.000Z",
+      "permissions": []
     }
   ]
 }
