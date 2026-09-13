@@ -1,0 +1,24 @@
+{
+  "pluginId": "fluxdown@bilibili-bangumi",
+  "version": "0.1.2",
+  "sequence": 5,
+  "contentHash": "sha256:ec409692f63032857949bc89b97beb8b56fbe3fbd968975d16fbc794a1acfcf2",
+  "minAppVersion": "0.1.44",
+  "name": "Bilibili 番剧分集下载",
+  "description": "B 站番剧插件：支持 ss/ep 番剧链接，按实际返回的质量码展开分集，并在下载阶段重新获取短期媒体地址。",
+  "author": "gulanthys",
+  "homepage": "https://github.com/gulanthys/FluxDown-plugin",
+  "mirrors": [
+    "https://raw.githubusercontent.com/gulanthys/FluxDown-plugin/master/dist/bilibili-bangumi-0.1.2.fxplug"
+  ],
+  "publishTime": "2026-09-13T00:00:00.000Z",
+  "permissions": [],
+  "yanked": "none",
+  "tags": [
+    "resolver",
+    "bilibili",
+    "bangumi",
+    "video",
+    "quality"
+  ]
+}
