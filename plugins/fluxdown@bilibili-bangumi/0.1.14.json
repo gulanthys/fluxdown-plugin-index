@@ -1,0 +1,26 @@
+{
+  "pluginId": "fluxdown@bilibili-bangumi",
+  "version": "0.1.14",
+  "sequence": 6,
+  "contentHash": "sha256:74f4f3bfef9a19534b2b11192bf47c6d87e9baa9def1070857f73b85442820a0",
+  "minAppVersion": "0.1.44",
+  "name": "Bilibili视频下载",
+  "description": "Bilibili 番剧订阅与剧集下载：支持番剧分集订阅下载、二维码登录和登录态复用；支持 4K、HDR、1080P、720P、480P、360P 等实际可用画质选择，以及优先最高画质、仅展示最高画质；支持过滤番外和预告内容。",
+  "author": "gulanthys",
+  "homepage": "https://github.com/gulanthys",
+  "mirrors": [
+    "https://raw.githubusercontent.com/gulanthys/fluxdown-plugin-index/main/dist/bilibili-bangumi-0.1.14.fxplug"
+  ],
+  "publishTime": "2026-09-21T00:00:00.000Z",
+  "permissions": ["auth"],
+  "yanked": "none",
+  "tags": [
+    "resolver",
+    "subscription",
+    "bilibili",
+    "bangumi",
+    "video",
+    "quality",
+    "auth"
+  ]
+}
