@@ -1,0 +1,28 @@
+{
+  "pluginId": "fluxdown@bilibili-bangumi",
+  "version": "1.0.0",
+  "sequence": 7,
+  "contentHash": "sha256:814601161d64ecd641f8d6d84874a02e0db9ec01555c3e3d30e63cddde9ff26b",
+  "minAppVersion": "0.1.44",
+  "name": "Bilibili视频下载",
+  "description": "Bilibili 视频插件：支持番剧、UP 主投稿订阅、DASH 解析、二维码登录及登录态复用。",
+  "author": "gulanthys",
+  "homepage": "https://github.com/gulanthys",
+  "mirrors": [
+    "https://raw.githubusercontent.com/gulanthys/fluxdown-plugin-index/main/dist/bilibili-bangumi-1.0.0.fxplug"
+  ],
+  "publishTime": "2026-09-21T00:00:00.000Z",
+  "yanked": "none",
+  "tags": [
+    "resolver",
+    "subscription",
+    "bilibili",
+    "bangumi",
+    "video",
+    "quality",
+    "auth"
+  ],
+  "permissions": [
+    "auth"
+  ]
+}
