@@ -1,0 +1,25 @@
+{
+  "pluginId": "myderr@quark-share",
+  "version": "0.1.0",
+  "sequence": 4,
+  "contentHash": "sha256:e13891cbcaf1dc7550bb3699883a83fc40d832357990ff96c1227c144b44914f",
+  "name": "夸克网盘分享转存",
+  "description": "将夸克分享链接当前目录中的直属文件转存到指定目录，并返回临时下载直链；多个文件通过 variants 提供选择。",
+  "author": "myderr",
+  "homepage": "https://github.com/myderr",
+  "mirrors": [
+    "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/main/dist/quark-share-0.1.0.fxplug"
+  ],
+  "publishTime": "2026-09-02T06:16:45.000Z",
+  "yanked": "none",
+  "tags": [
+    "resolver",
+    "quark",
+    "cloud-drive",
+    "share"
+  ],
+  "permissions": [],
+  "sigScheme": "none",
+  "sigstoreBundleRef": ""
+}
+
