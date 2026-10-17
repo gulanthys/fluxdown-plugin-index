@@ -8,8 +8,8 @@
   "author": "cocolight",
   "homepage": "https://github.com/cocolight/fluxdown-plugin-m3u8",
   "mirrors": [
-    "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/main/dist/m3u8-resolver-1.4.2.fxplug",
-    "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@main/dist/m3u8-resolver-1.4.2.fxplug",
+    "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/8359d29d980722e4a4020e18283c0d95722add51/dist/m3u8-resolver-1.4.2.fxplug",
+    "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@8359d29d980722e4a4020e18283c0d95722add51/dist/m3u8-resolver-1.4.2.fxplug",
     "https://github.com/cocolight/fluxdown-plugin-m3u8/releases/download/v1.4.2/fluxdown-plugin-m3u8_1.4.2.fxplug"
   ],
   "publishTime": "2026-09-30T10:25:55.000Z",

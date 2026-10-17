@@ -14,9 +14,8 @@
       "author": "fluxdown",
       "homepage": "https://fluxdown.zerx.dev",
       "mirrors": [
-        "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/main/dist/ytdlp-3.0.0.fxplug",
-        "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@main/dist/ytdlp-3.0.0.fxplug",
-        "https://github.com/zerx-lab/fluxdown-plugin-index/releases/download/ytdlp-3.0.0/ytdlp-3.0.0.fxplug"
+        "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/8359d29d980722e4a4020e18283c0d95722add51/dist/ytdlp-3.0.0.fxplug",
+        "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@8359d29d980722e4a4020e18283c0d95722add51/dist/ytdlp-3.0.0.fxplug"
       ],
       "publishTime": "2026-07-15T00:00:00.000Z",
       "yanked": "none",
@@ -45,9 +44,8 @@
       "author": "fluxdown",
       "homepage": "https://github.com/zerx-lab/fluxdown-plugin-github-accel",
       "mirrors": [
-        "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/main/dist/github-accel-1.0.0.fxplug",
-        "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@main/dist/github-accel-1.0.0.fxplug",
-        "https://github.com/zerx-lab/fluxdown-plugin-index/releases/download/github-accel-1.0.0/github-accel-1.0.0.fxplug"
+        "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/8359d29d980722e4a4020e18283c0d95722add51/dist/github-accel-1.0.0.fxplug",
+        "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@8359d29d980722e4a4020e18283c0d95722add51/dist/github-accel-1.0.0.fxplug"
       ],
       "publishTime": "2026-07-17T00:00:00.000Z",
       "yanked": "none",
@@ -73,7 +71,8 @@
       "author": "myderr",
       "homepage": "https://github.com/myderr",
       "mirrors": [
-        "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/main/dist/quark-share-0.1.0.fxplug"
+        "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/8359d29d980722e4a4020e18283c0d95722add51/dist/quark-share-0.1.0.fxplug",
+        "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@8359d29d980722e4a4020e18283c0d95722add51/dist/quark-share-0.1.0.fxplug"
       ],
       "publishTime": "2026-09-02T06:16:45.000Z",
       "yanked": "none",
@@ -98,7 +97,8 @@
       "author": "gulanthys",
       "homepage": "https://github.com/gulanthys",
       "mirrors": [
-        "https://raw.githubusercontent.com/gulanthys/fluxdown-plugin-index/main/dist/bilibili-bangumi-1.0.0.fxplug"
+        "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/8359d29d980722e4a4020e18283c0d95722add51/dist/bilibili-bangumi-1.0.0.fxplug",
+        "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@8359d29d980722e4a4020e18283c0d95722add51/dist/bilibili-bangumi-1.0.0.fxplug"
       ],
       "publishTime": "2026-09-21T00:00:00.000Z",
       "yanked": "none",
@@ -125,8 +125,8 @@
       "author": "cocolight",
       "homepage": "https://github.com/cocolight/fluxdown-plugin-m3u8",
       "mirrors": [
-        "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/main/dist/m3u8-resolver-1.4.2.fxplug",
-        "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@main/dist/m3u8-resolver-1.4.2.fxplug",
+        "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/8359d29d980722e4a4020e18283c0d95722add51/dist/m3u8-resolver-1.4.2.fxplug",
+        "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@8359d29d980722e4a4020e18283c0d95722add51/dist/m3u8-resolver-1.4.2.fxplug",
         "https://github.com/cocolight/fluxdown-plugin-m3u8/releases/download/v1.4.2/fluxdown-plugin-m3u8_1.4.2.fxplug"
       ],
       "publishTime": "2026-09-30T10:25:55.000Z",
@@ -157,8 +157,8 @@
       "author": "cocolight",
       "homepage": "https://github.com/cocolight/fluxdown-plugin-m3u8",
       "mirrors": [
-        "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/main/dist/m3u8-resolver-1.7.0.fxplug",
-        "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@main/dist/m3u8-resolver-1.7.0.fxplug",
+        "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/8359d29d980722e4a4020e18283c0d95722add51/dist/m3u8-resolver-1.7.0.fxplug",
+        "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@8359d29d980722e4a4020e18283c0d95722add51/dist/m3u8-resolver-1.7.0.fxplug",
         "https://github.com/cocolight/fluxdown-plugin-m3u8/releases/download/v1.7.0/fluxdown-plugin-m3u8_1.7.0.fxplug"
       ],
       "publishTime": "2026-10-01T12:47:22.000Z",

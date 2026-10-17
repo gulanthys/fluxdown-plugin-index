@@ -9,9 +9,8 @@
   "author": "fluxdown",
   "homepage": "https://fluxdown.zerx.dev",
   "mirrors": [
-    "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/main/dist/ytdlp-3.0.0.fxplug",
-    "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@main/dist/ytdlp-3.0.0.fxplug",
-    "https://github.com/zerx-lab/fluxdown-plugin-index/releases/download/ytdlp-3.0.0/ytdlp-3.0.0.fxplug"
+    "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/8359d29d980722e4a4020e18283c0d95722add51/dist/ytdlp-3.0.0.fxplug",
+    "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@8359d29d980722e4a4020e18283c0d95722add51/dist/ytdlp-3.0.0.fxplug"
   ],
   "publishTime": "2026-07-15T00:00:00.000Z",
   "yanked": "none",

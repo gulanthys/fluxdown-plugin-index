@@ -9,7 +9,8 @@
   "author": "gulanthys",
   "homepage": "https://github.com/gulanthys",
   "mirrors": [
-    "https://raw.githubusercontent.com/gulanthys/fluxdown-plugin-index/main/dist/bilibili-bangumi-1.0.0.fxplug"
+    "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/8359d29d980722e4a4020e18283c0d95722add51/dist/bilibili-bangumi-1.0.0.fxplug",
+    "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@8359d29d980722e4a4020e18283c0d95722add51/dist/bilibili-bangumi-1.0.0.fxplug"
   ],
   "publishTime": "2026-09-21T00:00:00.000Z",
   "yanked": "none",

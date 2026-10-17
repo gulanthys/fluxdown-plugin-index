@@ -8,7 +8,8 @@
   "author": "myderr",
   "homepage": "https://github.com/myderr",
   "mirrors": [
-    "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/main/dist/quark-share-0.1.0.fxplug"
+    "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/8359d29d980722e4a4020e18283c0d95722add51/dist/quark-share-0.1.0.fxplug",
+    "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@8359d29d980722e4a4020e18283c0d95722add51/dist/quark-share-0.1.0.fxplug"
   ],
   "publishTime": "2026-09-02T06:16:45.000Z",
   "yanked": "none",
@@ -22,4 +23,3 @@
   "sigScheme": "none",
   "sigstoreBundleRef": ""
 }
-
