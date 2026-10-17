@@ -1,0 +1,9 @@
+{
+  "plugins": [
+    {
+      "id": "m3u8-resolver@cocolight",
+      "repo": "cocolight/fluxdown-plugin-m3u8",
+      "tags": ["resolver", "hls", "m3u8", "video", "quality", "adblock"]
+    }
+  ]
+}

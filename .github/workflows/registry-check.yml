@@ -1,0 +1,46 @@
+name: registry-check
+
+# pull_request_target runs the trusted base scripts with a write token; the PR's
+# registry.json is read as data via git show and no PR code is ever executed.
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths: [registry.json]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: PR number to re-check
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: registry-check-${{ github.event.pull_request.number || inputs.pr }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PR: ${{ github.event.pull_request.number || inputs.pr }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Read the PR registry.json as data
+        run: |
+          git fetch --no-tags --depth=1 origin "pull/$PR/head"
+          git show FETCH_HEAD:registry.json > "$RUNNER_TEMP/head-registry.json" \
+            || echo "null" > "$RUNNER_TEMP/head-registry.json"
+      - name: Dry-run Stage for added / re-pointed entries
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/check-registry.mjs --head "$RUNNER_TEMP/head-registry.json" --comment "$PR"

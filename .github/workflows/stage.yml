@@ -1,0 +1,61 @@
+name: stage
+
+# Registered authors publish a GitHub Release; this job turns the Latest Release into an
+# append-only shard (hash pinned, sequence raised) and republishes index.json.
+on:
+  schedule:
+    - cron: "17 * * * *"
+  push:
+    branches: [main]
+    paths: [registry.json]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: stage
+  cancel-in-progress: false
+
+jobs:
+  stage:
+    if: github.repository == 'zerx-lab/fluxdown-plugin-index'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Pin the exact pre-stage baseline (full history)
+        run: git worktree add --detach "$RUNNER_TEMP/baseline" HEAD
+      - name: Stage registered releases
+        id: stage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/stage.mjs --results "$RUNNER_TEMP/stage-results.json"
+      - name: Offline admission against the pre-stage baseline
+        run: |
+          node --test scripts/index.test.mjs scripts/stage.test.mjs
+          node scripts/validate.mjs --base "$RUNNER_TEMP/baseline"
+      - name: Publish
+        env:
+          MESSAGE: ${{ steps.stage.outputs.message }}
+        run: |
+          git add plugins STATE index.json
+          if git diff --cached --quiet; then
+            echo "Nothing to publish."
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "$MESSAGE"
+          git push origin HEAD:main
+      - name: Sync stage-fail issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/stage.mjs --sync-issues "$RUNNER_TEMP/stage-results.json"
