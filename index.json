@@ -1,7 +1,7 @@
 {
   "indexId": "252c2b9e-c113-42d2-b1b5-3bf8bdb01866",
-  "sequence": 10,
-  "updated": "2026-10-04T09:33:47.000Z",
+  "sequence": 11,
+  "updated": "2026-10-19T00:56:29.000Z",
   "entries": [
     {
       "pluginId": "fluxdown@ytdlp",
@@ -18,7 +18,7 @@
         "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@8359d29d980722e4a4020e18283c0d95722add51/dist/ytdlp-3.0.0.fxplug"
       ],
       "publishTime": "2026-07-15T00:00:00.000Z",
-      "yanked": "none",
+      "yanked": "deprecated",
       "tags": [
         "resolver",
         "ytdlp",
@@ -207,6 +207,35 @@
         "ffmpeg",
         "ytdlp",
         "auth"
+      ],
+      "sigScheme": "none",
+      "sigstoreBundleRef": ""
+    },
+    {
+      "pluginId": "fluxdown@youtube-down",
+      "version": "1.0.0",
+      "sequence": 11,
+      "contentHash": "sha256:eb283ec5b344e8846ad1d5399eba41f3289d71a3de779637ae2f12810f652250",
+      "minAppVersion": "0.5.8",
+      "name": "YouTube 下载 YouTube Down",
+      "description": "经 FluxDown yt-dlp 组件把 YouTube 视频 / Shorts / 直播回放 / 播放列表解析为直链，交回引擎多段下载、音视频自动合并；下载时按清晰度弹框选择。附带浏览器扩展嗅探规则：在 YouTube 播放器上直接出现下载浮钮。",
+      "author": "fluxdown",
+      "homepage": "https://fluxdown.zerx.dev",
+      "mirrors": [
+        "https://raw.githubusercontent.com/zerx-lab/fluxdown-plugin-index/bf9e5e93ee713272b7550b97aecdafeccb1e7796/dist/youtube-down-1.0.0.fxplug",
+        "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@bf9e5e93ee713272b7550b97aecdafeccb1e7796/dist/youtube-down-1.0.0.fxplug"
+      ],
+      "publishTime": "2026-10-19T00:56:29.000Z",
+      "yanked": "none",
+      "tags": [
+        "resolver",
+        "ytdlp",
+        "video",
+        "youtube"
+      ],
+      "permissions": [
+        "ytdlp",
+        "browserRules"
       ],
       "sigScheme": "none",
       "sigstoreBundleRef": ""
