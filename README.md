@@ -2,7 +2,7 @@
 
 # FluxDown Plugin Index
 
-**The plugin index for [FluxDown](https://fluxdown.zerx.dev) — a content-addressed, Git-versioned catalog of plugins.**
+**The plugin index for [FluxDown](https://fluxdown.com) — a content-addressed, Git-versioned catalog of plugins.**
 
 Not a website — a **verifiable data format**. FluxDown discovers, downloads, and verifies plugins directly from this Git repository.
 
@@ -52,7 +52,7 @@ scripts/check-mirrors.mjs            Online full-GET/hash validation of every mi
 
 **Your repository**
 
-1. Develop the plugin in your own public GitHub repository (`manifest.json` + scripts; see the [plugin docs](https://fluxdown.zerx.dev/docs/en/plugins/packaging/)).
+1. Develop the plugin in your own public GitHub repository (`manifest.json` + scripts; see the [plugin docs](https://fluxdown.com/docs/en/plugins/packaging/)).
 2. Publish a GitHub Release (not draft, not pre-release) with **exactly one** `.fxplug` asset. The manifest `version` must be strict `MAJOR.MINOR.PATCH` and higher than every version already in the index. Enabling GitHub [immutable releases](https://github.blog/changelog/2025-10-28-immutable-releases-are-now-generally-available) is recommended.
 
 **Register once**
@@ -122,7 +122,7 @@ A `.fxplug` is a plain zip of the plugin directory with `manifest.json` at the r
 | `settings[]` | Declarative settings rendered on desktop and web (`text` / `password` / `textarea` / `folder` / `select` → `string`; `toggle` → `boolean`; `number` → `number`). |
 | `permissions[]` | `ffmpeg`, `ytdlp`, `auth`. Unknown values reject the manifest — pair a new permission with a `minAppVersion` bump. |
 
-Full API reference: <https://fluxdown.zerx.dev/docs/en/plugins/api-reference/>.
+Full API reference: <https://fluxdown.com/docs/en/plugins/api-reference/>.
 
 ### Validation commands
 
@@ -185,7 +185,7 @@ scripts/check-mirrors.mjs            对每个镜像完整 GET 并核验哈希
 
 **你的仓库**
 
-1. 在自己的公开 GitHub 仓库开发插件（`manifest.json` + 脚本，见[插件文档](https://fluxdown.zerx.dev/docs/zh/plugins/packaging/)）。
+1. 在自己的公开 GitHub 仓库开发插件（`manifest.json` + 脚本，见[插件文档](https://fluxdown.com/docs/zh/plugins/packaging/)）。
 2. 发布 GitHub Release（非草稿、非预发布），附件中**恰好一个** `.fxplug`。manifest `version` 须为严格的 `MAJOR.MINOR.PATCH`，且高于索引中已有的所有版本。建议开启 GitHub [不可变 Release](https://github.blog/changelog/2025-10-28-immutable-releases-are-now-generally-available)。
 
 **登记一次**
@@ -255,7 +255,7 @@ scripts/check-mirrors.mjs            对每个镜像完整 GET 并核验哈希
 | `settings[]` | 声明式设置，桌面与 Web 自动渲染（`text` / `password` / `textarea` / `folder` / `select` → `string`；`toggle` → `boolean`；`number` → `number`）。 |
 | `permissions[]` | `ffmpeg`、`ytdlp`、`auth`。未知值拒绝整份 manifest —— 新增权限时一并抬高 `minAppVersion`。 |
 
-完整 API 参考：<https://fluxdown.zerx.dev/docs/zh/plugins/api-reference/>。
+完整 API 参考：<https://fluxdown.com/docs/zh/plugins/api-reference/>。
 
 ### 校验命令
 
