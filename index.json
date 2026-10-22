@@ -1,7 +1,7 @@
 {
   "indexId": "252c2b9e-c113-42d2-b1b5-3bf8bdb01866",
-  "sequence": 12,
-  "updated": "2026-10-22T03:18:12.000Z",
+  "sequence": 13,
+  "updated": "2026-10-22T05:30:31.000Z",
   "entries": [
     {
       "pluginId": "fluxdown@ytdlp",
@@ -265,6 +265,35 @@
       "permissions": [
         "pageScripts"
       ],
+      "sigScheme": "none",
+      "sigstoreBundleRef": ""
+    },
+    {
+      "pluginId": "musicdl@musicdl",
+      "version": "0.1.1",
+      "sequence": 13,
+      "contentHash": "sha256:15f32c5bbb4ee60a69ef7b9b82a68c570e6c458a564227cccbecb17f60b474e6",
+      "name": "全网音乐下载",
+      "description": "搜索歌曲或粘贴网易云 / QQ / 酷狗 / 酷我音乐的歌曲链接，一键下载音乐；在音乐网站的歌曲页直接下载。音源来自煎饼搜（jbsou.cn），可用性以该站为准。",
+      "author": "zerx-lab",
+      "homepage": "https://github.com/zerx-lab/fluxdown-plugin-musicdl",
+      "mirrors": [
+        "https://github.com/zerx-lab/fluxdown-plugin-musicdl/releases/download/v0.1.1/musicdl%40musicdl-0.1.1.fxplug"
+      ],
+      "publishTime": "2026-10-22T05:30:31.000Z",
+      "yanked": "none",
+      "tags": [
+        "resolver",
+        "music",
+        "audio",
+        "lyrics"
+      ],
+      "permissions": [
+        "tasks",
+        "desktop",
+        "pageScripts"
+      ],
+      "networkHosts": [],
       "sigScheme": "none",
       "sigstoreBundleRef": ""
     }
