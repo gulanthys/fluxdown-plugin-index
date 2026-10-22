@@ -1,0 +1,28 @@
+{
+  "pluginId": "accountdl@accountdl",
+  "version": "0.1.0",
+  "sequence": 12,
+  "contentHash": "sha256:2eb3d49f0105319ea80a90d16275fb695f9044597067f53ea4a2a943a30cbe22",
+  "name": "账号直链",
+  "description": "用你在浏览器里已登录的账号，把百度网盘、115、夸克、123 云盘、蓝奏云分享，哔哩哔哩视频，Pixiv 作品，知网论文解析为直链下载。",
+  "author": "zerx-lab",
+  "homepage": "https://github.com/zerx-lab/fluxdown-plugin-accountdl",
+  "mirrors": [
+    "https://github.com/zerx-lab/fluxdown-plugin-accountdl/releases/download/v0.1.0/accountdl%40accountdl-0.1.0.fxplug"
+  ],
+  "publishTime": "2026-10-22T03:18:12.000Z",
+  "yanked": "none",
+  "tags": [
+    "resolver",
+    "netdisk",
+    "bilibili",
+    "pixiv",
+    "cnki",
+    "cookie"
+  ],
+  "permissions": [
+    "pageScripts"
+  ],
+  "sigScheme": "none",
+  "sigstoreBundleRef": ""
+}
