@@ -108,10 +108,10 @@ test("a new release becomes the next-sequence shard with manifest permissions an
   assert.deepEqual(result.entry, {
     pluginId: "alice@demo", version: "1.1.0", sequence: 10, contentHash: digest(bytes), name: "Demo",
     description: "demo plugin", author: "alice", homepage: `https://github.com/${REPO}`, mirrors: [releaseUrl("v1.1.0")],
-    publishTime: "2026-10-01T08:00:00.000Z", yanked: "none", tags: ["video"], permissions: ["ffmpeg"],
+    publishTime: "2026-10-01T08:00:00.000Z", yanked: "none", tags: ["video"], permissions: ["ffmpeg"], networkHosts: [],
     sigScheme: "none", sigstoreBundleRef: "",
   });
-  assert.deepEqual(result.review.matches, ["*://video.example.com/*"]);
+  assert.deepEqual(result.review.downloadUrls, ["*://video.example.com/*"]);
   const { state, index } = generatedDocuments(catalog);
   Object.assign(catalog, { state, index });
   // The legacy shard has no dist payload in this fixture; only the registered-release shard may skip dist/.
@@ -180,6 +180,28 @@ test("package admission matches the client's install rules", () => {
   assert.throws(() => inspectPackage(fxplug(manifest({ settings: [{ key: "q", title: "Q", type: "boolean", widget: "text" }] }))),
     /widget 'text' 不允许 type 'boolean'/);
   assert.equal(inspectPackage(fxplug()).manifest.identity, "alice@demo");
+});
+
+test("new manifest rules are enforced and desktop network hosts are staged with the risk level", async () => {
+  const view = { id: "w", title: "W", location: "window", desktop: { entry: "w.js", networkHosts: ["b.example.com", "a.example.com"] } };
+  const desktop = manifest({ permissions: ["desktop"], contributes: { views: [view] } });
+  const bytes = fxplug(desktop, [{ name: "w.js", content: "export default 1;" }]);
+  const result = await stagePlugin({ plugin: PLUGIN, catalog: catalogWith([]), ...fakes(bytes) });
+  assert.deepEqual(result.entry.networkHosts, ["a.example.com", "b.example.com"]);
+  assert.equal(result.review.risk, "full");
+  assert.throws(() => inspectPackage(fxplug(manifest({ contributes: { views: [view] } }), [{ name: "w.js" }])), /permissions 必须包含 desktop/);
+  assert.throws(() => inspectPackage(fxplug(manifest({ permissions: ["browserRules"], contributes: { sniffRules: "rules.json" } }),
+    [{ name: "rules.json", content: '{"format":"nope","rules":[]}' }])), /sniffRules format/);
+  assert.throws(() => inspectPackage(fxplug(manifest({ window: { entry: "w.js" } }), [{ name: "w.js" }])), /未知字段 window/);
+});
+
+test("catalog validation checks shard permissions and networkHosts", () => {
+  const shard = legacyShard("1.0.0", Buffer.from("x"), 1);
+  const ok = (extra) => validateCatalog(catalogWith([{ ...shard, ...extra }]), { checkIndex: false });
+  assert.deepEqual(ok({ permissions: ["desktop"], networkHosts: ["a.example.com"] }).filter((e) => /permissions|networkHosts/.test(e)), []);
+  assert.ok(ok({ permissions: ["root"] }).some((e) => e.includes("permissions")));
+  assert.ok(ok({ networkHosts: "a.example.com" }).some((e) => e.includes("networkHosts")));
+  assert.ok(ok({ networkHosts: Array(65).fill("a.example.com") }).some((e) => e.includes("networkHosts")));
 });
 
 test("registry rejects duplicate identities and repositories", () => {

@@ -1,0 +1,78 @@
+name: sync-validator
+
+# Admission rules are the validator of the published fluxdown-plugin-sdk (vendored verbatim).
+# Every SDK release is picked up here — dispatched by FluxDown's plugin-sdk-release workflow,
+# with a daily run as fallback — tested offline, re-checked against the current listings and
+# pushed to main. Nobody edits vendor/ by hand.
+on:
+  schedule:
+    - cron: "41 3 * * *"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: fluxdown-plugin-sdk version to vendor (an explicit older version rolls back)
+        required: false
+        default: latest
+
+permissions:
+  contents: write
+  issues: write
+
+# Shares the stage group: both push to main.
+concurrency:
+  group: stage
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.repository == 'zerx-lab/fluxdown-plugin-index'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Vendor the requested SDK release (npm integrity verified)
+        id: sync
+        env:
+          VERSION: ${{ inputs.version || 'latest' }}
+        run: node scripts/sync-validator.mjs --version "$VERSION"
+      - name: Offline admission with the new rules
+        if: steps.sync.outputs.changed == 'true'
+        run: |
+          git worktree add --detach "$RUNNER_TEMP/baseline" HEAD
+          node --test scripts/index.test.mjs scripts/stage.test.mjs scripts/validator.test.mjs
+          node scripts/validate.mjs --base "$RUNNER_TEMP/baseline"
+      - name: Re-admit current listings
+        id: readmit
+        if: steps.sync.outputs.changed == 'true'
+        run: |
+          if node scripts/readmit.mjs --summary "$GITHUB_STEP_SUMMARY" > "$RUNNER_TEMP/readmit.md"; then
+            echo "rejected=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "rejected=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::Some listed plugins no longer pass the new admission rules; see the job summary."
+          fi
+      - name: Publish
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          FROM: ${{ steps.sync.outputs.from }}
+          TO: ${{ steps.sync.outputs.to }}
+        run: |
+          git add vendor/fluxdown-plugin-manifest.mjs
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "chore(validator): 准入规则同步 fluxdown-plugin-sdk ${FROM} → ${TO}"
+          git push origin HEAD:main
+      - name: Report rejected listings
+        if: steps.readmit.outputs.rejected == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TO: ${{ steps.sync.outputs.to }}
+        run: |
+          title="Listed plugins rejected by admission rules ${TO}"
+          gh issue create --title "$title" --body-file "$RUNNER_TEMP/readmit.md"

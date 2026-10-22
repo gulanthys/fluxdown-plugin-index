@@ -8,6 +8,7 @@ import { resolve } from "node:path";
 import { loadCatalog, validateRegistry } from "./index-lib.mjs";
 import { mirrorBytes } from "./check-mirrors.mjs";
 import { stagePlugin, publishedVersions, githubClient } from "./stage-lib.mjs";
+import { vendoredValidatorVersion } from "./validator-lib.mjs";
 
 const MARKER = "<!-- registry-check -->";
 const code = (value) => `\`${value}\``;
@@ -47,7 +48,11 @@ export async function checkRegistry({ catalog, head, github, download }) {
       lines.push(`✅ ${result.review ? `${code(result.review.tag)} · ${code(result.review.asset)} · ` : ""}v${result.version}：${note}`);
       if (result.review) {
         lines.push("", `- 权限 / permissions: ${result.review.permissions.map(code).join(", ") || "无 / none"}`,
-          `- 拦截的 URL / intercepted URLs: ${result.review.matches.map(code).join(", ") || "无 / none"}`);
+          `- 风险等级 / risk level: ${code(result.review.risk)}`,
+          `- 网络主机 / network hosts: ${result.review.networkHosts.map(code).join(", ") || "无 / none"}`,
+          `- 处理的下载地址 / handled download URLs: ${result.review.downloadUrls.map(code).join(", ") || "无 / none"}`,
+          `- 页面脚本运行站点 / page script sites: ${result.review.pageScriptMatches.map(code).join(", ") || "无 / none"}`,
+          `- 准入规则 / admission rules: ${code(vendoredValidatorVersion())}`);
       }
     } catch (err) {
       ok = false;

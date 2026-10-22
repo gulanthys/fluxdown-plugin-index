@@ -2,7 +2,8 @@
 // Pure over injected `github` / `download`, so tests run without network.
 import { createHash } from "node:crypto";
 import { isRegisteredRelease, generatedDocuments } from "./index-lib.mjs";
-import { inspectPackage, compareVersions, matchPatterns } from "./package-lib.mjs";
+import { inspectPackage, compareVersions } from "./package-lib.mjs";
+import { reviewOf } from "../vendor/fluxdown-plugin-manifest.mjs";
 
 const sha256 = (bytes) => "sha256:" + createHash("sha256").update(bytes).digest("hex");
 
@@ -63,8 +64,7 @@ export async function stagePlugin({ plugin, catalog, github, download, apply = t
   if (manifest.identity !== plugin.id) {
     throw new Error(`manifest identity ${manifest.identity} 与登记的 ${plugin.id} 不一致`);
   }
-  const permissions = manifest.permissions ?? [];
-  const review = { permissions, matches: matchPatterns(manifest), tag: release.tag_name, asset: asset.name };
+  const review = { ...reviewOf(manifest), tag: release.tag_name, asset: asset.name };
 
   const identical = published.find(([, entry]) => entry.contentHash === contentHash);
   if (identical) {
@@ -92,7 +92,8 @@ export async function stagePlugin({ plugin, catalog, github, download, apply = t
     publishTime: new Date(release.published_at).toISOString(),
     yanked: "none",
     tags: plugin.tags ?? [],
-    permissions,
+    permissions: review.permissions,
+    networkHosts: review.networkHosts,
     sigScheme: "none",
     sigstoreBundleRef: "",
   };

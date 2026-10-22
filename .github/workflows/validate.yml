@@ -43,7 +43,7 @@ jobs:
         with:
           node-version: "20"
       - name: Deterministic publication behavior tests (no network)
-        run: node --test scripts/index.test.mjs scripts/stage.test.mjs scripts/manifest-cases.test.mjs
+        run: node --test scripts/index.test.mjs scripts/stage.test.mjs scripts/validator.test.mjs
       - name: Offline content / flatten / append-only / high-water admission
         run: node scripts/validate.mjs --base .baseline
 
@@ -60,3 +60,5 @@ jobs:
           node-version: "20"
       - name: Every declared mirror must serve the exact full package
         run: node scripts/check-mirrors.mjs
+      - name: Vendored admission rules are byte-identical to their npm release
+        run: node scripts/sync-validator.mjs --verify

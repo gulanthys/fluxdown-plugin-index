@@ -3,8 +3,9 @@ import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { join, basename } from "node:path";
 import { isDeepStrictEqual } from "node:util";
+import { NETWORK_HOSTS_MAX, PACKAGE_MAX_BYTES, VALID_PERMISSIONS } from "../vendor/fluxdown-plugin-manifest.mjs";
 
-export const MAX_PACKAGE_BYTES = 10 * 1024 * 1024;
+export const MAX_PACKAGE_BYTES = PACKAGE_MAX_BYTES;
 const hash = (bytes) => "sha256:" + createHash("sha256").update(bytes).digest("hex");
 const positiveSequence = (n) => Number.isSafeInteger(n) && n > 0;
 const parse = (bytes, path) => {
@@ -150,6 +151,17 @@ export function validateCatalog(catalog, { checkIndex = true } = {}) {
     if (!positiveSequence(entry.sequence)) errors.push(`${path}: sequence 须为正安全整数`);
     if (seen.has(entry.sequence)) errors.push(`${path}: sequence ${entry.sequence} 重复`);
     seen.add(entry.sequence);
+    if (entry.permissions !== undefined) {
+      if (!Array.isArray(entry.permissions) || !entry.permissions.every((p) => VALID_PERMISSIONS.includes(p))) {
+        errors.push(`${path}: permissions 须为 ${VALID_PERMISSIONS.join("/")} 的子集`);
+      }
+    }
+    if (entry.networkHosts !== undefined) {
+      if (!Array.isArray(entry.networkHosts) || entry.networkHosts.length > NETWORK_HOSTS_MAX
+        || !entry.networkHosts.every((host) => typeof host === "string" && host !== "")) {
+        errors.push(`${path}: networkHosts 须为至多 ${NETWORK_HOSTS_MAX} 项的主机名数组`);
+      }
+    }
     if (!Array.isArray(entry.mirrors) || !entry.mirrors.length) {
       errors.push(`${path}: mirrors 不可为空`);
       continue;
