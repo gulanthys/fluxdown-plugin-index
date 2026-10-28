@@ -14,6 +14,11 @@
       "id": "musicdl@musicdl",
       "repo": "zerx-lab/fluxdown-plugin-musicdl",
       "tags": ["resolver", "music", "audio", "lyrics"]
+    },
+    {
+      "id": "fluxdown@bilibili-bangumi",
+      "repo": "gulanthys/FluxDown-plugin",
+      "tags": ["resolver", "video", "bilibili", "bangumi", "subscription"]
     }
   ]
 }
