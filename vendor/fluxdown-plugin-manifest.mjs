@@ -1,4 +1,4 @@
-// fluxdown-plugin-sdk@0.4.0 manifest validator (generated; do not edit)
+// fluxdown-plugin-sdk@0.5.0 manifest validator (generated; do not edit)
 
 // src/manifest.ts
 var VALID_PERMISSIONS = [
@@ -24,7 +24,7 @@ var VALID_INTERCEPT_STAGES = [
   "failed"
 ];
 var VALID_EVENTS = ["onStart", "onError", "onDone", "onMetaProbed", "onCancel"];
-var VIEW_LOCATIONS = ["activity", "settings", "taskDetail", "window"];
+var VIEW_LOCATIONS = ["activity", "settings", "taskDetail", "window", "auth"];
 var WINDOW_SIZE_MIN = 240;
 var WINDOW_SIZE_MAX = 4096;
 var NETWORK_HOSTS_MAX = 64;
@@ -132,6 +132,10 @@ function checkEntry(errors, where, entry, files, strict) {
 function checkTimeout(errors, where, value) {
   if (value === void 0 || value === null) return;
   if (!Number.isSafeInteger(value) || value <= 0) errors.push(`${where} timeoutMs \u987B\u4E3A\u6B63\u6574\u6570`);
+}
+function checkMemoryLimit(errors, where, value) {
+  if (value === void 0 || value === null) return;
+  if (!Number.isSafeInteger(value) || value <= 0) errors.push(`${where} memoryLimitMb \u987B\u4E3A\u6B63\u6574\u6570`);
 }
 function checkMatch(errors, where, match) {
   if (!isObject(match)) return void errors.push(`${where} \u987B\u4E3A\u5BF9\u8C61`);
@@ -302,6 +306,7 @@ function checkContributes(errors, manifest, files, permissions) {
     if (views.length > VIEWS_MAX) errors.push(`contributes.views \u81F3\u591A ${VIEWS_MAX} \u9879`);
     const seen = /* @__PURE__ */ new Set();
     let settingsViews = 0;
+    let authViews = 0;
     for (const view of views) {
       if (!isObject(view)) {
         errors.push("view \u987B\u4E3A\u5BF9\u8C61");
@@ -321,6 +326,12 @@ function checkContributes(errors, manifest, files, permissions) {
       }
       if (view.location === "settings" && ++settingsViews > 1) {
         errors.push("location \u4E3A settings \u7684 view \u81F3\u591A 1 \u4E2A");
+      }
+      if (view.location === "auth") {
+        if (++authViews > 1) errors.push("location \u4E3A auth \u7684 view \u81F3\u591A 1 \u4E2A");
+        if (manifest.auth === void 0 || manifest.auth === null) {
+          errors.push("location \u4E3A auth \u7684 view \u8981\u6C42\u58F0\u660E auth");
+        }
       }
       const hasDesktop = view.desktop !== void 0 && view.desktop !== null;
       if (view.portable !== void 0 && typeof view.portable !== "boolean") {
@@ -544,10 +555,11 @@ function validateManifest(manifest, files, options = {}) {
         errors.push("resolver \u987B\u4E3A\u5BF9\u8C61");
         continue;
       }
-      unknownKeys(errors, "resolver", resolver, ["match", "entry", "timeoutMs", "multi"]);
+      unknownKeys(errors, "resolver", resolver, ["match", "entry", "timeoutMs", "memoryLimitMb", "multi"]);
       checkMatch(errors, "resolver match", resolver.match);
       checkEntry(errors, "resolver entry", resolver.entry, fileSet, strict);
       checkTimeout(errors, "resolver", resolver.timeoutMs);
+      checkMemoryLimit(errors, "resolver", resolver.memoryLimitMb);
       checkOptionalBool(errors, "resolver multi", resolver.multi);
     }
   }
