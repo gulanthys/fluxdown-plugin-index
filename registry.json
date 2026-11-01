@@ -17,7 +17,7 @@
     },
     {
       "id": "fluxdown@bilibili-bangumi",
-      "repo": "gulanthys/FluxDown-plugins",
+      "repo": "gulanthys/fluxdown-plugin-bilibili-bangumi",
       "tags": ["resolver", "video", "bilibili", "bangumi", "subscription"]
     }
   ]
