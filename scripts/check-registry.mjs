@@ -24,16 +24,30 @@ export async function checkRegistry({ catalog, head, github, download }) {
   const base = new Map(catalog.registry.plugins.map((plugin) => [plugin.id, plugin]));
   const headIds = new Set(head.plugins.map((plugin) => plugin.id));
   const removed = [...base.keys()].filter((id) => !headIds.has(id));
-  const changed = head.plugins.filter((plugin) => base.get(plugin.id)?.repo !== plugin.repo);
+  const formerKey = (plugin) => JSON.stringify(plugin?.formerRepos ?? []);
+  const changed = head.plugins.filter((plugin) => base.get(plugin.id)?.repo !== plugin.repo
+    || formerKey(base.get(plugin.id)) !== formerKey(plugin));
   const view = { ...catalog, registry: head };
   let ok = true;
 
   for (const plugin of changed) {
     lines.push(`### ${code(plugin.id)} ← [${plugin.repo}](https://github.com/${plugin.repo})`, "");
     const previous = base.get(plugin.id);
-    if (previous) {
+    const addedFormer = (plugin.formerRepos ?? []).filter((repo) => !(previous?.formerRepos ?? []).includes(repo));
+    if (addedFormer.length) {
+      lines.push(`⚠️ 新增 formerRepos ${addedFormer.map(code).join(", ")}：这些仓库的 Release 附件将被视为本插件已发布版本的合法镜像，请审核者确认它们是同一仓库改名前的名称。`,
+        "New formerRepos: their Release assets become valid mirrors of this plugin's published versions; reviewers must confirm they are pre-rename names of the same repository.", "");
+    }
+    // Same-owner rename only; an owner change is still a maintainer change.
+    const renamed = previous && (plugin.formerRepos ?? []).includes(previous.repo)
+      && previous.repo.split("/")[0].toLowerCase() === plugin.repo.split("/")[0].toLowerCase();
+    if (previous && previous.repo !== plugin.repo && !renamed) {
       lines.push(`⚠️ 维护者变更 ${code(previous.repo)} → ${code(plugin.repo)}：需原维护者在本 PR 中确认。`,
         `Maintainer change: the previous maintainer must confirm in this PR.`, "");
+    }
+    if (renamed) {
+      lines.push(`ℹ️ 仓库改名 ${code(previous.repo)} → ${code(plugin.repo)}（旧名记入 formerRepos）。`,
+        "Repository renamed (old name kept in formerRepos).", "");
     }
     const owner = plugin.repo.split("/")[0].toLowerCase();
     const authors = [...new Set(publishedVersions(catalog, plugin.id).map(([, e]) => e.author).filter(Boolean))];
