@@ -62,14 +62,21 @@ export function validateRegistry(registry) {
       errors.push(`${where} 须为对象`);
       continue;
     }
-    for (const key of Object.keys(plugin)) if (!["id", "repo", "tags"].includes(key)) errors.push(`${where}: 未知字段 ${key}`);
+    for (const key of Object.keys(plugin)) if (!["id", "repo", "formerRepos", "tags"].includes(key)) errors.push(`${where}: 未知字段 ${key}`);
     if (!/^[a-z0-9_-]+@[a-z0-9_-]+$/.test(plugin.id || "")) errors.push(`${where}: id 须匹配 author@name`);
     if (!REPO.test(plugin.repo || "")) errors.push(`${where}: repo 须为 GitHub owner/repo`);
     if (ids.has(plugin.id)) errors.push(`${where}: id ${plugin.id} 重复登记`);
-    const repoKey = String(plugin.repo).toLowerCase();
-    if (repos.has(repoKey)) errors.push(`${where}: repo ${plugin.repo} 已登记其他插件（一个仓库只发布一个插件）`);
+    const former = plugin.formerRepos ?? [];
+    if (!Array.isArray(former) || former.length > 10 || !former.every((repo) => typeof repo === "string" && REPO.test(repo))) {
+      errors.push(`${where}: formerRepos 须为 ≤10 个 GitHub owner/repo`);
+    }
     ids.add(plugin.id);
-    repos.add(repoKey);
+    // Former names stay reserved: their Release URLs remain this plugin's published mirrors.
+    for (const repo of [plugin.repo, ...(Array.isArray(former) ? former : [])]) {
+      const repoKey = String(repo).toLowerCase();
+      if (repos.has(repoKey)) errors.push(`${where}: repo ${repo} 已登记其他插件（一个仓库只发布一个插件，formerRepos 同样占用仓库名）`);
+      repos.add(repoKey);
+    }
     if (plugin.tags !== undefined && (!Array.isArray(plugin.tags) || plugin.tags.length > 10
       || !plugin.tags.every((tag) => TAG.test(tag)) || new Set(plugin.tags).size !== plugin.tags.length)) {
       errors.push(`${where}: tags 须为 ≤10 个不重复的小写短标签`);
@@ -81,15 +88,27 @@ export function validateRegistry(registry) {
 export const registeredRepo = (registry, pluginId) => (Array.isArray(registry?.plugins)
   ? registry.plugins.find((plugin) => plugin?.id === pluginId)?.repo : undefined);
 
-/** `https://github.com/<repo>/releases/download/<tag>/<asset>.fxplug` of the registered repository. */
-export function isRegisteredRelease(registry, pluginId, value) {
+const registeredFormerRepos = (registry, pluginId) => {
+  const former = Array.isArray(registry?.plugins)
+    ? registry.plugins.find((plugin) => plugin?.id === pluginId)?.formerRepos : undefined;
+  return Array.isArray(former) ? former : [];
+};
+
+/**
+ * `https://github.com/<repo>/releases/download/<tag>/<asset>.fxplug` of the registered repository.
+ * `includeFormer` also accepts the entry's `formerRepos` (renamed repositories whose already-published
+ * mirrors must keep validating); new releases are only ever staged from the current `repo`.
+ */
+export function isRegisteredRelease(registry, pluginId, value, { includeFormer = false } = {}) {
   const repo = registeredRepo(registry, pluginId);
   if (!repo) return false;
+  const accepted = new Set([repo, ...(includeFormer ? registeredFormerRepos(registry, pluginId) : [])]
+    .map((name) => name.toLowerCase()));
   try {
     const url = new URL(value);
     const [owner, name, releases, download, tag, asset, ...rest] = url.pathname.slice(1).split("/");
     return url.protocol === "https:" && url.host === "github.com" && !url.search && !url.hash && !rest.length
-      && `${owner}/${name}`.toLowerCase() === repo.toLowerCase() && releases === "releases" && download === "download"
+      && accepted.has(`${owner}/${name}`.toLowerCase()) && releases === "releases" && download === "download"
       && !!tag && /^[^/]+\.fxplug$/.test(decodeURIComponent(asset || ""));
   } catch {
     return false;
@@ -175,7 +194,7 @@ export function validateCatalog(catalog, { checkIndex = true } = {}) {
     }
     // Registered authors host bytes on their own GitHub Release (Stage ingested and hashed them;
     // check-mirrors re-GETs online). Everything else keeps the local dist/ payload rule.
-    if (isRegisteredRelease(catalog.registry, entry.pluginId, entry.mirrors[0])) continue;
+    if (isRegisteredRelease(catalog.registry, entry.pluginId, entry.mirrors[0], { includeFormer: true })) continue;
     try {
       const name = decodeURIComponent(basename(new URL(entry.mirrors[0]).pathname));
       if (!/^[a-zA-Z0-9._-]+\.fxplug$/.test(name)) throw new Error("首镜像文件名不是安全的 .fxplug 名称");

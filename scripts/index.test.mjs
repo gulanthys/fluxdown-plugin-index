@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { loadCatalog, loadBaseline, validateCatalog, validateHistory, generatedDocuments, mirrorURL, MAX_PACKAGE_BYTES } from "./index-lib.mjs";
+import { loadCatalog, loadBaseline, validateCatalog, validateHistory, validateRegistry, isRegisteredRelease, generatedDocuments, mirrorURL, MAX_PACKAGE_BYTES } from "./index-lib.mjs";
 
 const ID = "252c2b9e-c113-42d2-b1b5-3bf8bdb01866";
 const SHA = "a".repeat(40);
@@ -223,4 +223,20 @@ test("local package size is bounded before hashing", (t) => {
   const { root, entries } = fixture(t);
   writeFileSync(join(root, packageOf(entries[0])), Buffer.alloc(MAX_PACKAGE_BYTES + 1));
   assert.throws(() => loadCatalog(root), /超过 10 MiB/);
+});
+
+test("formerRepos keep published Release mirrors valid but never admit new releases", () => {
+  const registry = { plugins: [{ id: "author@one", repo: "author/new-name", formerRepos: ["author/Old-Name"] }] };
+  const old = "https://github.com/author/old-name/releases/download/v1.0.0/one-1.0.0.fxplug";
+  assert.equal(isRegisteredRelease(registry, "author@one", old), false);
+  assert.equal(isRegisteredRelease(registry, "author@one", old, { includeFormer: true }), true);
+  assert.deepEqual(validateRegistry(registry), []);
+});
+
+test("formerRepos cannot claim a repository registered to another plugin", () => {
+  const errors = validateRegistry({ plugins: [
+    { id: "author@one", repo: "author/one" },
+    { id: "author@two", repo: "author/two", formerRepos: ["Author/One"] },
+  ] });
+  contains(errors, "已登记");
 });

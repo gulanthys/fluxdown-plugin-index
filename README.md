@@ -66,7 +66,7 @@ scripts/check-mirrors.mjs            Online full-GET/hash validation of every mi
    { "id": "author@name", "repo": "owner/repo", "tags": ["resolver", "video"] }
    ```
 
-   `id` must equal the manifest `identity`; one repository hosts one plugin; `tags` (optional, ≤10 lowercase) are shown in the market.
+   `id` must equal the manifest `identity`; one repository hosts one plugin; `tags` (optional, ≤10 lowercase) are shown in the market. Renamed your repository? Point `repo` at the new name and keep the old one in `"formerRepos": ["owner/old-name"]` so already-published versions (whose mirrors use the old Release URL) stay valid; new releases are only staged from `repo`.
 4. The **registry-check** bot downloads your Latest Release, runs the full admission and comments with the result, the declared permissions, and the URL patterns the plugin intercepts. Fix your release and push to the PR to re-run.
 5. A maintainer reviews and merges. Stage publishes your plugin within minutes.
 
@@ -200,7 +200,7 @@ scripts/check-mirrors.mjs            对每个镜像完整 GET 并核验哈希
    { "id": "author@name", "repo": "owner/repo", "tags": ["resolver", "video"] }
    ```
 
-   `id` 必须等于 manifest `identity`；一个仓库只发布一个插件；`tags` 可选（≤10 个小写标签），用于市场展示。
+   `id` 必须等于 manifest `identity`；一个仓库只发布一个插件；`tags` 可选（≤10 个小写标签），用于市场展示。仓库改名时把 `repo` 改成新名，并把旧名记入 `"formerRepos": ["owner/old-name"]`，已发布版本（镜像仍是旧 Release 地址）才能继续通过校验；新版本只从 `repo` 收录。
 4. **registry-check** 机器人会下载你的 Latest Release，跑完整准入，并在 PR 里评论结果、声明的权限和插件拦截的 URL 规则。修好 Release 后向 PR 推送任意提交即可重跑。
 5. 维护者审核合并，Stage 在几分钟内收录。
 
