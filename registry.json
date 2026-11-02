@@ -20,6 +20,11 @@
       "repo": "gulanthys/fluxdown-bilibili-bangumi",
       "formerRepos": ["gulanthys/FluxDown-plugin"],
       "tags": ["resolver", "video", "bilibili", "bangumi", "subscription"]
+    },
+    {
+      "id": "fluxdown@anime-archive",
+      "repo": "gulanthys/fluxdown-anime-archive",
+      "tags": ["archive", "anime", "classification"]
     }
   ]
 }
