@@ -101,7 +101,7 @@
         "https://cdn.jsdelivr.net/gh/zerx-lab/fluxdown-plugin-index@8359d29d980722e4a4020e18283c0d95722add51/dist/bilibili-bangumi-1.0.0.fxplug"
       ],
       "publishTime": "2026-09-21T00:00:00.000Z",
-      "yanked": "none",
+      "yanked": "deprecated",
       "tags": [
         "resolver",
         "subscription",
@@ -339,7 +339,7 @@
         "https://github.com/gulanthys/FluxDown-plugin/releases/download/v1.0.2/bilibili-bangumi-1.0.2.fxplug"
       ],
       "publishTime": "2026-10-27T12:13:20.000Z",
-      "yanked": "none",
+      "yanked": "deprecated",
       "tags": [
         "resolver",
         "video",
@@ -368,7 +368,7 @@
         "https://github.com/gulanthys/FluxDown-plugin/releases/download/v1.1.0/bilibili-bangumi-1.1.0.fxplug"
       ],
       "publishTime": "2026-10-31T08:54:01.000Z",
-      "yanked": "none",
+      "yanked": "deprecated",
       "tags": [
         "resolver",
         "video",
@@ -398,7 +398,7 @@
         "https://github.com/gulanthys/fluxdown-bilibili-bangumi/releases/download/v1.1.1/bilibili-bangumi-1.1.1.fxplug"
       ],
       "publishTime": "2026-10-31T14:57:06.000Z",
-      "yanked": "none",
+      "yanked": "deprecated",
       "tags": [
         "resolver",
         "video",
@@ -459,7 +459,7 @@
         "https://github.com/gulanthys/fluxdown-bilibili-bangumi/releases/download/v1.1.2/bilibili-bangumi-1.1.2.fxplug"
       ],
       "publishTime": "2026-11-04T10:00:59.000Z",
-      "yanked": "none",
+      "yanked": "deprecated",
       "tags": [
         "resolver",
         "video",
@@ -488,7 +488,7 @@
         "https://github.com/gulanthys/fluxdown-bilibili-bangumi/releases/download/v1.1.3/bilibili-bangumi-1.1.3.fxplug"
       ],
       "publishTime": "2026-11-04T12:04:05.000Z",
-      "yanked": "none",
+      "yanked": "deprecated",
       "tags": [
         "resolver",
         "video",

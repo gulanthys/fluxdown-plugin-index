@@ -76,6 +76,12 @@ async function main() {
   const errors = [];
   let count = 0;
   for (const [path, entry] of catalog.shards) {
+    // Clients never install yanked versions by default and pin contentHash on every download,
+    // so a yanked version's mirrors need not keep serving (e.g. an author replaced the asset).
+    if ((entry.yanked ?? "none") !== "none") {
+      console.log(`跳过已撤回版本: ${path}（yanked: ${entry.yanked}）`);
+      continue;
+    }
     for (const value of entry.mirrors) {
       count++;
       try {

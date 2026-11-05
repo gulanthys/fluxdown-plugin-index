@@ -23,8 +23,9 @@ export async function checkRegistry({ catalog, head, github, download }) {
   }
   const base = new Map(catalog.registry.plugins.map((plugin) => [plugin.id, plugin]));
   const headIds = new Set(head.plugins.map((plugin) => plugin.id));
-  const removed = [...base.keys()].filter((id) => !headIds.has(id));
-  const formerKey = (plugin) => JSON.stringify(plugin?.formerRepos ?? []);
+  const headFormerIds = new Set(head.plugins.flatMap((plugin) => plugin.formerIds ?? []));
+  const removed = [...base.keys()].filter((id) => !headIds.has(id) && !headFormerIds.has(id));
+  const formerKey = (plugin) => JSON.stringify([plugin?.formerRepos ?? [], plugin?.formerIds ?? []]);
   const changed = head.plugins.filter((plugin) => base.get(plugin.id)?.repo !== plugin.repo
     || formerKey(base.get(plugin.id)) !== formerKey(plugin));
   const view = { ...catalog, registry: head };
@@ -37,6 +38,11 @@ export async function checkRegistry({ catalog, head, github, download }) {
     if (addedFormer.length) {
       lines.push(`⚠️ 新增 formerRepos ${addedFormer.map(code).join(", ")}：这些仓库的 Release 附件将被视为本插件已发布版本的合法镜像，请审核者确认它们是同一仓库改名前的名称。`,
         "New formerRepos: their Release assets become valid mirrors of this plugin's published versions; reviewers must confirm they are pre-rename names of the same repository.", "");
+    }
+    const addedFormerIds = (plugin.formerIds ?? []).filter((id) => !(previous?.formerIds ?? []).includes(id));
+    if (addedFormerIds.length) {
+      lines.push(`⚠️ 新增 formerIds ${addedFormerIds.map(code).join(", ")}：这些 identity 的已发布版本将改由本登记校验镜像（不再收录新版本，已安装用户不会自动迁移），请审核者确认是同一插件改名，并按需撤回旧版本。`,
+        "New formerIds: published versions of these identities are validated against this entry from now on (no new releases are staged for them and installed copies do not migrate); reviewers must confirm it is the same plugin renamed and yank the old versions as needed.", "");
     }
     // Same-owner rename only; an owner change is still a maintainer change.
     const renamed = previous && (plugin.formerRepos ?? []).includes(previous.repo)

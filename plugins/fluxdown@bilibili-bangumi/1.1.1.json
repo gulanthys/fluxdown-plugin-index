@@ -13,7 +13,7 @@
     "https://github.com/gulanthys/fluxdown-bilibili-bangumi/releases/download/v1.1.1/bilibili-bangumi-1.1.1.fxplug"
   ],
   "publishTime": "2026-10-31T14:57:06.000Z",
-  "yanked": "none",
+  "yanked": "deprecated",
   "tags": [
     "resolver",
     "video",

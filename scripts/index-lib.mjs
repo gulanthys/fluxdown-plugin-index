@@ -47,7 +47,7 @@ export const REGISTRY_PATH = "registry.json";
 const REPO = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})\/[A-Za-z0-9._-]{1,100}$/;
 const TAG = /^[a-z0-9][a-z0-9-]{0,31}$/;
 
-/** Author registry: one plugin identity per GitHub repository, both unique. */
+/** Author registry: one plugin identity per GitHub repository, both unique (former ids / repos included). */
 export function validateRegistry(registry) {
   const errors = [];
   if (!registry || typeof registry !== "object" || Array.isArray(registry) || !Array.isArray(registry.plugins)) {
@@ -62,15 +62,23 @@ export function validateRegistry(registry) {
       errors.push(`${where} 须为对象`);
       continue;
     }
-    for (const key of Object.keys(plugin)) if (!["id", "repo", "formerRepos", "tags"].includes(key)) errors.push(`${where}: 未知字段 ${key}`);
+    for (const key of Object.keys(plugin)) if (!["id", "repo", "formerRepos", "formerIds", "tags"].includes(key)) errors.push(`${where}: 未知字段 ${key}`);
     if (!/^[a-z0-9_-]+@[a-z0-9_-]+$/.test(plugin.id || "")) errors.push(`${where}: id 须匹配 author@name`);
     if (!REPO.test(plugin.repo || "")) errors.push(`${where}: repo 须为 GitHub owner/repo`);
-    if (ids.has(plugin.id)) errors.push(`${where}: id ${plugin.id} 重复登记`);
     const former = plugin.formerRepos ?? [];
     if (!Array.isArray(former) || former.length > 10 || !former.every((repo) => typeof repo === "string" && REPO.test(repo))) {
       errors.push(`${where}: formerRepos 须为 ≤10 个 GitHub owner/repo`);
     }
-    ids.add(plugin.id);
+    const formerIds = plugin.formerIds ?? [];
+    if (!Array.isArray(formerIds) || formerIds.length > 10
+      || !formerIds.every((id) => typeof id === "string" && /^[a-z0-9_-]+@[a-z0-9_-]+$/.test(id))) {
+      errors.push(`${where}: formerIds 须为 ≤10 个 author@name`);
+    }
+    // Former identities stay reserved: their published shards keep validating against this entry.
+    for (const id of [plugin.id, ...(Array.isArray(formerIds) ? formerIds : [])]) {
+      if (ids.has(id)) errors.push(`${where}: id ${id} 重复登记（formerIds 同样占用 identity）`);
+      ids.add(id);
+    }
     // Former names stay reserved: their Release URLs remain this plugin's published mirrors.
     for (const repo of [plugin.repo, ...(Array.isArray(former) ? former : [])]) {
       const repoKey = String(repo).toLowerCase();
@@ -85,25 +93,23 @@ export function validateRegistry(registry) {
   return errors;
 }
 
-export const registeredRepo = (registry, pluginId) => (Array.isArray(registry?.plugins)
-  ? registry.plugins.find((plugin) => plugin?.id === pluginId)?.repo : undefined);
-
-const registeredFormerRepos = (registry, pluginId) => {
-  const former = Array.isArray(registry?.plugins)
-    ? registry.plugins.find((plugin) => plugin?.id === pluginId)?.formerRepos : undefined;
-  return Array.isArray(former) ? former : [];
-};
+/** The entry registered as `pluginId`; `includeFormer` also matches an entry listing it in `formerIds`. */
+const registeredPlugin = (registry, pluginId, includeFormer) => (Array.isArray(registry?.plugins)
+  ? registry.plugins.find((plugin) => plugin?.id === pluginId
+    || (includeFormer && Array.isArray(plugin?.formerIds) && plugin.formerIds.includes(pluginId)))
+  : undefined);
 
 /**
  * `https://github.com/<repo>/releases/download/<tag>/<asset>.fxplug` of the registered repository.
- * `includeFormer` also accepts the entry's `formerRepos` (renamed repositories whose already-published
- * mirrors must keep validating); new releases are only ever staged from the current `repo`.
+ * `includeFormer` also accepts the entry's `formerRepos` (renamed repositories) and shards of its
+ * `formerIds` (renamed identities), whose already-published mirrors must keep validating; new releases
+ * are only ever staged from the current `repo` under the current `id`.
  */
 export function isRegisteredRelease(registry, pluginId, value, { includeFormer = false } = {}) {
-  const repo = registeredRepo(registry, pluginId);
-  if (!repo) return false;
-  const accepted = new Set([repo, ...(includeFormer ? registeredFormerRepos(registry, pluginId) : [])]
-    .map((name) => name.toLowerCase()));
+  const plugin = registeredPlugin(registry, pluginId, includeFormer);
+  if (!plugin?.repo) return false;
+  const former = includeFormer && Array.isArray(plugin.formerRepos) ? plugin.formerRepos : [];
+  const accepted = new Set([plugin.repo, ...former].map((name) => String(name).toLowerCase()));
   try {
     const url = new URL(value);
     const [owner, name, releases, download, tag, asset, ...rest] = url.pathname.slice(1).split("/");

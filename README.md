@@ -116,6 +116,7 @@ The index never re-implements the client's rules. They live in FluxDown's `packa
 - **Yank**: edit the shard's `yanked` (`vulnerable` / `malicious` also disable installed copies on clients); regenerate with `node scripts/generate.mjs`.
 - **Delist**: remove the entry from `registry.json` (Stage stops ingesting and closes its `stage-fail` issue); yank versions that must disappear from installs.
 - **Maintainer change**: a PR re-pointing `repo` for an existing `id`; the bot flags it and the previous maintainer must confirm in the PR. The new version must still be higher.
+- **Identity rename**: a PR replacing an entry's `id` and listing the old one in `"formerIds": ["author@old"]`. The old identity stays reserved and its published shards keep validating against this entry's `repo` / `formerRepos`; new releases are staged only under the new `id`, starting a fresh version line. Installed copies do not migrate (clients match by identity), so yank the old versions `deprecated` in the same PR — that hides the old identity from the market without disabling installed copies.
 - **Re-check a PR**: run the `registry-check` workflow manually with the PR number.
 
 ### The `.fxplug` package
@@ -138,7 +139,7 @@ GITHUB_TOKEN=… node scripts/stage.mjs --root /tmp/index-copy        # dry-run 
 GITHUB_TOKEN=… node scripts/check-registry.mjs --head registry.json # PR check locally
 ```
 
-The first three are offline. `--base` takes a complete checkout of the exact published base commit (CI uses `pull_request.base.sha` / `push.before`; Stage pins the pre-stage `HEAD`). Missing baselines and shallow history fail admission. Published shards, legacy `dist/` packages, identities, versions, hashes and sequences cannot be deleted or rewritten; mirror and display metadata repairs are allowed. `check-mirrors.mjs` GETs every mirror in full (45 s, 10 MiB, ≤5 HTTPS/public-host redirects).
+The first three are offline. `--base` takes a complete checkout of the exact published base commit (CI uses `pull_request.base.sha` / `push.before`; Stage pins the pre-stage `HEAD`). Missing baselines and shallow history fail admission. Published shards, legacy `dist/` packages, identities, versions, hashes and sequences cannot be deleted or rewritten; mirror and display metadata repairs are allowed. `check-mirrors.mjs` GETs every mirror of every non-yanked version in full (45 s, 10 MiB, ≤5 HTTPS/public-host redirects); yanked versions are skipped because clients never install them by default.
 
 ### How the client consumes it
 
@@ -250,6 +251,7 @@ scripts/check-mirrors.mjs            对每个镜像完整 GET 并核验哈希
 - **撤回**：修改分片 `yanked`（`vulnerable` / `malicious` 会让客户端停用已安装副本），再跑 `node scripts/generate.mjs`。
 - **下架**：从 `registry.json` 删除条目（Stage 停止收录并关闭其 `stage-fail` issue）；需要从用户端消失的版本另行撤回。
 - **更换维护者**：PR 把已有 `id` 的 `repo` 指向新仓库；机器人会标注，须原维护者在 PR 中确认，新版本号仍须更高。
+- **更换 identity**：PR 把条目的 `id` 换成新值，并把旧值记入 `"formerIds": ["author@old"]`。旧 identity 继续被占用，其已发布分片仍按本条目的 `repo` / `formerRepos` 校验镜像；新版本只以新 `id` 收录，版本线从头开始。客户端按 identity 匹配，已安装用户不会自动迁移，因此应在同一 PR 把旧版本撤回为 `deprecated`——旧 identity 从市场消失，已安装副本不会被停用。
 - **重跑 PR 检查**：手动运行 `registry-check` workflow 并填 PR 号。
 
 ### `.fxplug` 插件包
@@ -272,7 +274,7 @@ GITHUB_TOKEN=… node scripts/stage.mjs --root /tmp/index-copy        # 在副�
 GITHUB_TOKEN=… node scripts/check-registry.mjs --head registry.json # 本地跑 PR 检查
 ```
 
-前三条离线执行。`--base` 为已发布精确 commit 的完整 checkout（CI 用 `pull_request.base.sha` / `push.before`；Stage 固定为收录前的 `HEAD`）。缺失基线或 shallow 历史直接失败。已发布分片、历史 `dist/` 包、identity、版本、哈希与 sequence 不得删除或改写；允许修复镜像与展示元数据。`check-mirrors.mjs` 对每个镜像完整 GET（45 秒、10 MiB、≤5 次 HTTPS / 公网重定向）。
+前三条离线执行。`--base` 为已发布精确 commit 的完整 checkout（CI 用 `pull_request.base.sha` / `push.before`；Stage 固定为收录前的 `HEAD`）。缺失基线或 shallow 历史直接失败。已发布分片、历史 `dist/` 包、identity、版本、哈希与 sequence 不得删除或改写；允许修复镜像与展示元数据。`check-mirrors.mjs` 对每个未撤回版本的每个镜像完整 GET（45 秒、10 MiB、≤5 次 HTTPS / 公网重定向）；已撤回版本跳过，因为客户端默认不会安装它们。
 
 ### 客户端如何使用
 

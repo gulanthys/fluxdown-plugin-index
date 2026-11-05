@@ -261,3 +261,25 @@ test("registry PR check dry-runs new entries without mutating the catalog and fl
   const bad = await checkRegistry({ catalog, head: { plugins: [{ ...PLUGIN, id: "Bad" }] }, github, download });
   assert.equal(bad.ok, false);
 });
+
+test("formerIds rename an identity: old shards stay valid, new releases stage under the new id, the PR check flags it", async () => {
+  const OLD = { id: "alice@old", repo: REPO };
+  const renamed = { ...PLUGIN, formerIds: [OLD.id] };
+  const oldShard = { ...legacyShard("1.1.0", Buffer.from("old identity"), 3), pluginId: OLD.id, mirrors: [releaseUrl("v1.1.0")] };
+
+  const delisted = catalogWith([oldShard], [PLUGIN]);
+  assert.ok(validateCatalog(delisted).some((e) => e.includes(OLD.id) && e.includes("dist/")));
+
+  const catalog = catalogWith([oldShard], [renamed]);
+  assert.deepEqual(validateCatalog(catalog), []);
+  // The old id's 1.1.0 does not block the new id's first release, even at the same version.
+  const result = await stagePlugin({ plugin: renamed, catalog, ...fakes(fxplug()) });
+  assert.equal(result.status, "published");
+  assert.equal(result.entry.pluginId, PLUGIN.id);
+
+  const { github, download } = fakes(fxplug());
+  const { ok, markdown } = await checkRegistry({ catalog: catalogWith([oldShard], [OLD]), head: { plugins: [renamed] }, github, download });
+  assert.equal(ok, true, markdown);
+  assert.match(markdown, /新增 formerIds `alice@old`/);
+  assert.doesNotMatch(markdown, /delisted/);
+});

@@ -240,3 +240,13 @@ test("formerRepos cannot claim a repository registered to another plugin", () =>
   ] });
   contains(errors, "已登记");
 });
+
+test("formerIds reserve the old identity and never stage it", () => {
+  const registry = { plugins: [{ id: "author@new", repo: "author/one", formerIds: ["author@old"] }] };
+  const release = "https://github.com/author/one/releases/download/v1.0.0/one-1.0.0.fxplug";
+  assert.deepEqual(validateRegistry(registry), []);
+  assert.equal(isRegisteredRelease(registry, "author@old", release), false);
+  assert.equal(isRegisteredRelease(registry, "author@old", release, { includeFormer: true }), true);
+  contains(validateRegistry({ plugins: [...registry.plugins, { id: "author@old", repo: "author/two" }] }), "重复登记");
+  contains(validateRegistry({ plugins: [{ id: "author@new", repo: "author/one", formerIds: ["Bad"] }] }), "formerIds");
+});
