@@ -1,6 +1,6 @@
 {
   "indexId": "252c2b9e-c113-42d2-b1b5-3bf8bdb01866",
-  "sequence": 20,
+  "sequence": 21,
   "updated": "2026-11-04T12:04:05.000Z",
   "entries": [
     {
@@ -498,6 +498,33 @@
       ],
       "permissions": [
         "auth"
+      ],
+      "networkHosts": [],
+      "sigScheme": "none",
+      "sigstoreBundleRef": ""
+    },
+    {
+      "pluginId": "fluxdown@anime-archive",
+      "version": "1.0.1",
+      "sequence": 21,
+      "contentHash": "sha256:bc5096dac69169f04bfe8a07d500fa27fc79d8933dc5a42b743afc0fb92677f2",
+      "minAppVersion": "0.6.4",
+      "name": "Anime Archive",
+      "description": "Organize recognized anime episodes into one title folder across all seasons.",
+      "author": "gulanthys",
+      "homepage": "https://github.com/gulanthys/fluxdown-anime-archive",
+      "mirrors": [
+        "https://github.com/gulanthys/fluxdown-anime-archive/releases/download/v1.0.1/anime-archive-1.0.1.fxplug"
+      ],
+      "publishTime": "2026-10-31T17:22:40.000Z",
+      "yanked": "none",
+      "tags": [
+        "archive",
+        "anime",
+        "classification"
+      ],
+      "permissions": [
+        "archive"
       ],
       "networkHosts": [],
       "sigScheme": "none",
