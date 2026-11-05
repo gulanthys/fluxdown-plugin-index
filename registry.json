@@ -23,8 +23,9 @@
       "tags": ["resolver", "video", "bilibili", "bangumi", "subscription"]
     },
     {
-      "id": "fluxdown@anime-archive",
+      "id": "gulanthys@anime-archive",
       "repo": "gulanthys/fluxdown-anime-archive",
+      "formerIds": ["fluxdown@anime-archive"],
       "tags": ["archive", "anime", "classification"]
     }
   ]
