@@ -3,7 +3,7 @@
     {
       "id": "m3u8-resolver@cocolight",
       "repo": "cocolight/fluxdown-plugin-m3u8",
-      "tags": ["resolver", "hls", "m3u8", "video", "quality", "adblock"]
+      "tags": ["resolver", "hls", "m3u8", "dash", "video", "quality", "adblock", "subscription", "ytdlp"]
     },
     {
       "id": "accountdl@accountdl",
@@ -20,6 +20,11 @@
       "repo": "gulanthys/fluxdown-bilibili-bangumi",
       "formerRepos": ["gulanthys/FluxDown-plugin"],
       "tags": ["resolver", "video", "bilibili", "bangumi", "subscription"]
+    },
+    {
+      "id": "fluxdown@anime-archive",
+      "repo": "gulanthys/fluxdown-anime-archive",
+      "tags": ["archive", "anime", "classification"]
     }
   ]
 }
