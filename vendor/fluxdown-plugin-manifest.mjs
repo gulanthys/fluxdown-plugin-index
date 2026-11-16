@@ -1,4 +1,4 @@
-// fluxdown-plugin-sdk@0.5.1 manifest validator (generated; do not edit)
+// fluxdown-plugin-sdk@0.6.0 manifest validator (generated; do not edit)
 
 // src/manifest.ts
 var VALID_PERMISSIONS = [
@@ -107,6 +107,18 @@ function isValidNetworkHost(host) {
   if (isIpv6(host)) return host === host.toLowerCase();
   return host.split(".").every((label) => /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/.test(label));
 }
+function isPublicHttpsUrl(value) {
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "https:" || !url.hostname || url.username || url.password || url.hash) return false;
+    const host = url.hostname.toLowerCase();
+    if (host === "localhost" || host.endsWith(".localhost") || host.endsWith(".local")) return false;
+    if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host) || host.startsWith("[") || host.includes(":")) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
 function unknownKeys(errors, where, value, allowed) {
   for (const key of Object.keys(value)) {
     if (!allowed.includes(key)) errors.push(`${where}: \u672A\u77E5\u5B57\u6BB5 ${key}`);
@@ -151,7 +163,7 @@ function checkMain(errors, manifest, files, permissions) {
   const main = manifest.main;
   if (main === void 0 || main === null) return;
   if (!isObject(main)) return void errors.push("main \u987B\u4E3A\u5BF9\u8C61");
-  unknownKeys(errors, "main", main, ["entry", "events", "background"]);
+  unknownKeys(errors, "main", main, ["entry", "events", "background", "imageHosts"]);
   if (!isSafeRelativePath(main.entry)) {
     errors.push(`main entry \u8DEF\u5F84 '${String(main.entry)}' \u975E\u6CD5`);
   } else {
@@ -171,6 +183,17 @@ function checkMain(errors, manifest, files, permissions) {
     errors.push("main.background \u987B\u4E3A\u5E03\u5C14");
   } else if (main.background === true && !hasPermission(permissions, "background")) {
     errors.push("main.background \u4E3A true \u65F6 permissions \u5FC5\u987B\u5305\u542B background");
+  }
+  const imageHosts = main.imageHosts ?? [];
+  if (!Array.isArray(imageHosts)) errors.push("main.imageHosts \u987B\u4E3A\u6570\u7EC4");
+  else {
+    if (imageHosts.length > NETWORK_HOSTS_MAX) errors.push(`main.imageHosts \u81F3\u591A ${NETWORK_HOSTS_MAX} \u9879`);
+    const seen = /* @__PURE__ */ new Set();
+    for (const host of imageHosts) {
+      if (!isValidNetworkHost(host)) errors.push(`main.imageHosts '${String(host)}' \u975E\u6CD5`);
+      else if (seen.has(host)) errors.push(`main.imageHosts '${host}' \u91CD\u590D`);
+      else seen.add(host);
+    }
   }
 }
 function checkDesktop(errors, view, desktop, files, permissions) {
@@ -299,7 +322,7 @@ function checkContributes(errors, manifest, files, permissions) {
   const contributes = manifest.contributes;
   if (contributes === void 0 || contributes === null) return;
   if (!isObject(contributes)) return void errors.push("contributes \u987B\u4E3A\u5BF9\u8C61");
-  unknownKeys(errors, "contributes", contributes, ["views", "commands", "sniffRules", "pageScripts", "archive"]);
+  unknownKeys(errors, "contributes", contributes, ["views", "commands", "sniffRules", "pageScripts", "archive", "archiveRules"]);
   const hasMain = manifest.main !== void 0 && manifest.main !== null;
   const views = contributes.views ?? [];
   if (!Array.isArray(views)) errors.push("contributes.views \u987B\u4E3A\u6570\u7EC4");
@@ -401,6 +424,28 @@ function checkContributes(errors, manifest, files, permissions) {
       if (!inPackage(files, archive)) errors.push(`\u5305\u5185\u7F3A\u5C11\u6587\u4EF6 '${archive}'`);
     }
   }
+  const archiveRules = contributes.archiveRules;
+  if (archiveRules !== void 0 && archiveRules !== null) {
+    if (!isObject(archiveRules)) {
+      errors.push("archiveRules \u987B\u4E3A\u5BF9\u8C61");
+    } else {
+      unknownKeys(errors, "archiveRules", archiveRules, ["entry", "publicKey", "updateUrl"]);
+      const entry = archiveRules.entry;
+      if (typeof entry !== "string" || !isSafeRelativePath(entry)) {
+        errors.push(`archiveRules entry \u8DEF\u5F84 '${String(entry)}' \u975E\u6CD5`);
+      } else {
+        if (!hasExtension(entry, [".json"])) errors.push("archiveRules entry \u6269\u5C55\u540D\u987B\u4E3A .json");
+        if (!inPackage(files, entry)) errors.push(`\u5305\u5185\u7F3A\u5C11\u6587\u4EF6 '${entry}'`);
+      }
+      if (typeof archiveRules.publicKey !== "string" || !/^[0-9a-fA-F]{64}$/.test(archiveRules.publicKey)) {
+        errors.push("archiveRules publicKey \u987B\u4E3A 64 \u4F4D\u5341\u516D\u8FDB\u5236 Ed25519 \u516C\u94A5");
+      }
+      if (!hasPermission(permissions, "archive")) errors.push("\u58F0\u660E archiveRules \u65F6 permissions \u5FC5\u987B\u5305\u542B archive");
+      if (archiveRules.updateUrl !== void 0 && archiveRules.updateUrl !== null && (typeof archiveRules.updateUrl !== "string" || !isPublicHttpsUrl(archiveRules.updateUrl))) {
+        errors.push("archiveRules updateUrl \u987B\u4E3A\u65E0\u51ED\u636E\u3001\u65E0\u7247\u6BB5\u7684\u516C\u5F00 HTTPS URL");
+      }
+    }
+  }
   checkPageScripts(errors, contributes.pageScripts, files, permissions);
 }
 function checkSetting(errors, field, seen) {
@@ -420,8 +465,10 @@ function checkSetting(errors, field, seen) {
     "max",
     "pattern",
     "helperScript",
-    "helperLabel"
+    "helperLabel",
+    "localizations"
   ]);
+  checkSettingLocalizations(errors, field, where);
   if (!nonEmptyString(key)) errors.push("setting key \u4E0D\u53EF\u4E3A\u7A7A");
   else if (seen.has(key)) errors.push(`setting key '${key}' \u91CD\u590D`);
   else seen.add(key);
@@ -502,6 +549,51 @@ function checkSetting(errors, field, seen) {
   }
   if (type === "boolean" && typeof fallback === "string" && fallback !== "true" && fallback !== "false") {
     errors.push(`${where}: boolean default \u5FC5\u987B\u4E3A 'true'/'false'`);
+  }
+}
+var SETTING_LOCALIZATION_FIELDS = ["title", "description", "helperLabel"];
+function checkSettingLocalizations(errors, field, where) {
+  const raw = field.localizations;
+  if (raw === void 0) return;
+  if (!isObject(raw)) return void errors.push(`${where}: localizations \u987B\u4E3A\u5BF9\u8C61`);
+  const locales = Object.keys(raw);
+  if (locales.length > 64) errors.push(`${where}: localizations \u6700\u591A 64 \u79CD\u8BED\u8A00`);
+  const seen = /* @__PURE__ */ new Set();
+  for (const locale of locales) {
+    const value = raw[locale];
+    if (!/^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$/.test(locale)) {
+      errors.push(`${where}: localization locale '${locale}' \u975E\u6CD5`);
+    }
+    const normalized = locale.toLowerCase();
+    if (seen.has(normalized)) errors.push(`${where}: localization locale '${locale}' \u91CD\u590D`);
+    seen.add(normalized);
+    if (!isObject(value)) {
+      errors.push(`${where}: localization '${locale}' \u987B\u4E3A\u5BF9\u8C61`);
+      continue;
+    }
+    unknownKeys(errors, `${where} localization '${locale}'`, value, [...SETTING_LOCALIZATION_FIELDS, "options"]);
+    for (const key of SETTING_LOCALIZATION_FIELDS) {
+      const text = value[key];
+      if (text !== void 0 && text !== null && (typeof text !== "string" || charLength(text) > 4096)) {
+        errors.push(`${where}: localization '${locale}' ${key} \u987B\u4E3A \u22644096 \u5B57\u7B26\u7684\u5B57\u7B26\u4E32`);
+      }
+    }
+    if (value.helperLabel !== void 0 && value.helperLabel !== null && field.helperScript == null) {
+      errors.push(`${where}: localization '${locale}' helperLabel \u987B\u4E0E helperScript \u540C\u65F6\u51FA\u73B0`);
+    }
+    if (value.options !== void 0) {
+      if (!isObject(value.options)) errors.push(`${where}: localization '${locale}' options \u987B\u4E3A\u5BF9\u8C61`);
+      else {
+        const options = Array.isArray(field.options) ? field.options : [];
+        const values = new Set(options.filter(isObject).map((o) => o.value));
+        for (const [option, label] of Object.entries(value.options)) {
+          if (!values.has(option)) errors.push(`${where}: localization '${locale}' \u672A\u77E5 option value '${option}'`);
+          if (typeof label !== "string" || charLength(label) > 4096) {
+            errors.push(`${where}: localization '${locale}' option '${option}' \u987B\u4E3A \u22644096 \u5B57\u7B26\u7684\u5B57\u7B26\u4E32`);
+          }
+        }
+      }
+    }
   }
 }
 function utf8Length(s) {
@@ -678,8 +770,16 @@ function riskOf(manifest) {
 }
 function networkHostsOf(manifest) {
   const hosts = /* @__PURE__ */ new Set();
+  for (const host of manifest.main?.imageHosts ?? []) hosts.add(host);
   for (const view of manifest.contributes?.views ?? []) {
     for (const host of view.desktop?.networkHosts ?? []) hosts.add(host);
+  }
+  const updateUrl = manifest.contributes?.archiveRules?.updateUrl;
+  if (updateUrl) {
+    try {
+      hosts.add(new URL(updateUrl).hostname);
+    } catch {
+    }
   }
   return [...hosts].sort((a, b) => a < b ? -1 : a > b ? 1 : 0);
 }
@@ -708,6 +808,9 @@ function packageFilesOf(manifest) {
       }
     }
     if (typeof contributes.archive === "string") files.push(contributes.archive);
+    if (isObject(contributes.archiveRules) && typeof contributes.archiveRules.entry === "string") {
+      files.push(contributes.archiveRules.entry);
+    }
   }
   return files;
 }
@@ -732,6 +835,65 @@ function validateSniffPack(content) {
     errors.push("sniffRules rules \u987B\u4E3A\u6570\u7EC4");
   } else if (pack.rules.length > SNIFF_PACK_MAX_RULES) {
     errors.push(`sniffRules \u81F3\u591A ${SNIFF_PACK_MAX_RULES} \u6761\u89C4\u5219`);
+  }
+  return { ok: errors.length === 0, errors };
+}
+var ARCHIVE_RULES_MAX_BYTES = 512 * 1024;
+function validateArchiveRulesPack(content) {
+  const errors = [];
+  const size = typeof content === "string" ? utf8Length(content) : content.byteLength;
+  if (size > ARCHIVE_RULES_MAX_BYTES) return { ok: false, errors: [`archiveRules \u6587\u4EF6\u8D85\u8FC7 ${ARCHIVE_RULES_MAX_BYTES} \u5B57\u8282`] };
+  let envelope;
+  try {
+    envelope = JSON.parse(typeof content === "string" ? content : new TextDecoder("utf-8", { fatal: true }).decode(content));
+  } catch (err) {
+    return { ok: false, errors: [`archiveRules JSON \u89E3\u6790\u5931\u8D25: ${err.message}`] };
+  }
+  if (!isObject(envelope) || Object.keys(envelope).sort().join(",") !== "payload,signature" || typeof envelope.payload !== "string" || typeof envelope.signature !== "string" || !/^[0-9a-fA-F]{128}$/.test(envelope.signature)) {
+    return { ok: false, errors: ["archiveRules \u987B\u4E3A\u5305\u542B payload \u4E0E 128 \u4F4D\u5341\u516D\u8FDB\u5236 signature \u7684 JSON envelope"] };
+  }
+  let payload;
+  try {
+    payload = JSON.parse(envelope.payload);
+  } catch (err) {
+    return { ok: false, errors: [`archiveRules payload JSON \u89E3\u6790\u5931\u8D25: ${err.message}`] };
+  }
+  if (!isObject(payload)) return { ok: false, errors: ["archiveRules payload \u987B\u4E3A\u5BF9\u8C61"] };
+  unknownKeys(errors, "archiveRules payload", payload, ["format", "schemaVersion", "sequence", "rules"]);
+  if (payload.format !== "fluxdown-archive-rules" || payload.schemaVersion !== 1 || !Number.isSafeInteger(payload.sequence) || payload.sequence < 1 || !Array.isArray(payload.rules) || payload.rules.length < 1 || payload.rules.length > 500) {
+    errors.push("archiveRules payload \u683C\u5F0F\u3001schemaVersion\u3001sequence \u6216 rules \u65E0\u6548");
+  } else {
+    const seen = /* @__PURE__ */ new Set();
+    for (const rule of payload.rules) {
+      if (!isObject(rule)) {
+        errors.push("archiveRules rule \u987B\u4E3A\u5BF9\u8C61");
+        continue;
+      }
+      unknownKeys(errors, "archiveRules rule", rule, ["id", "folderName", "match"]);
+      if (typeof rule.id !== "string" || !/^[a-z0-9_-]{1,64}$/.test(rule.id) || seen.has(rule.id)) errors.push("archiveRules rule id \u65E0\u6548\u6216\u91CD\u590D");
+      if (typeof rule.id === "string") seen.add(rule.id);
+      if (typeof rule.folderName !== "string" || rule.folderName.length < 1 || utf8Length(rule.folderName) > 180 || /[\/\\:\u0000-\u001f\u007f]/.test(rule.folderName) || rule.folderName === "." || rule.folderName === "..") {
+        errors.push("archiveRules folderName \u975E\u6CD5");
+      }
+      if (!isObject(rule.match)) {
+        errors.push("archiveRules match \u987B\u4E3A\u5BF9\u8C61");
+        continue;
+      }
+      const matcher = rule.match;
+      unknownKeys(errors, "archiveRules match", matcher, ["fileName", "extensions", "metadata", "headerHex"]);
+      if (Object.keys(matcher).length === 0) errors.push("archiveRules match \u81F3\u5C11\u9700\u8981\u4E00\u4E2A\u6761\u4EF6");
+      if (matcher.fileName !== void 0 && (typeof matcher.fileName !== "string" || !/^[\x00-\x7f]{1,256}$/.test(matcher.fileName))) errors.push("archiveRules fileName glob \u65E0\u6548");
+      if (matcher.extensions !== void 0 && (!Array.isArray(matcher.extensions) || matcher.extensions.length < 1 || matcher.extensions.length > 64 || matcher.extensions.some((ext) => typeof ext !== "string" || !/^[a-zA-Z0-9]{1,32}$/.test(ext)))) errors.push("archiveRules extensions \u65E0\u6548");
+      if (matcher.headerHex !== void 0 && (typeof matcher.headerHex !== "string" || !/^(?:[0-9a-fA-F]{2}){1,4096}$/.test(matcher.headerHex))) errors.push("archiveRules headerHex \u65E0\u6548");
+      if (matcher.metadata !== void 0) {
+        const allowed = ["platform", "mediaKind", "creatorId", "creatorName", "seriesId", "seriesTitle", "collectionId", "collectionTitle"];
+        if (!isObject(matcher.metadata)) errors.push("archiveRules metadata \u987B\u4E3A\u5BF9\u8C61");
+        else {
+          unknownKeys(errors, "archiveRules metadata", matcher.metadata, allowed);
+          if (Object.keys(matcher.metadata).length === 0 || Object.values(matcher.metadata).some((v) => typeof v !== "string" || v.length === 0 || utf8Length(v) > 256)) errors.push("archiveRules metadata predicates \u65E0\u6548");
+        }
+      }
+    }
   }
   return { ok: errors.length === 0, errors };
 }
@@ -808,6 +970,8 @@ function validatePackage(manifest, files) {
   if (contributes === null) return { ok: errors.length === 0, errors };
   const rules = typeof contributes.sniffRules === "string" ? read(contributes.sniffRules) : void 0;
   if (rules !== void 0) errors.push(...validateSniffPack(rules).errors);
+  const archiveRules = isObject(contributes.archiveRules) && typeof contributes.archiveRules.entry === "string" ? read(contributes.archiveRules.entry) : void 0;
+  if (archiveRules !== void 0) errors.push(...validateArchiveRulesPack(archiveRules).errors);
   for (const view of Array.isArray(contributes.views) ? contributes.views : []) {
     const icon = isObject(view) && typeof view.icon === "string" ? read(view.icon) : void 0;
     if (icon !== void 0) errors.push(...validateViewIcon(String(view.id), icon).errors);
@@ -865,6 +1029,7 @@ export {
   packageFilesOf,
   reviewOf,
   riskOf,
+  validateArchiveRulesPack,
   validateManifest,
   validatePackage,
   validatePageScriptFiles,
