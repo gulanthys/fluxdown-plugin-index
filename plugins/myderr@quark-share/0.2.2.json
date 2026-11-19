@@ -1,0 +1,30 @@
+{
+  "pluginId": "myderr@quark-share",
+  "version": "0.2.2",
+  "sequence": 29,
+  "contentHash": "sha256:553cf94b51a5b24490c5b769c4e99e6fd5e28a38898c006c8f4c2b34da00aa0e",
+  "minAppVersion": "0.6.8",
+  "name": "Quark Share Resolver",
+  "description": "浏览夸克网盘分享目录，选择所需文件后转存到指定目录并返回临时下载直链，完成后自动清理。",
+  "author": "myderr",
+  "homepage": "https://github.com/myderr/fluxdown-quark-share",
+  "mirrors": [
+    "https://github.com/myderr/fluxdown-quark-share/releases/download/v0.2.2/quark-share-0.2.2.fxplug"
+  ],
+  "publishTime": "2026-11-19T08:18:14.000Z",
+  "yanked": "none",
+  "tags": [
+    "resolver",
+    "quark",
+    "cloud-drive",
+    "share"
+  ],
+  "permissions": [
+    "background",
+    "tasks",
+    "pageScripts"
+  ],
+  "networkHosts": [],
+  "sigScheme": "none",
+  "sigstoreBundleRef": ""
+}
