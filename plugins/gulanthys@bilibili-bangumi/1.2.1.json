@@ -1,0 +1,30 @@
+{
+  "pluginId": "gulanthys@bilibili-bangumi",
+  "version": "1.2.1",
+  "sequence": 31,
+  "contentHash": "sha256:b8853e4c55107f9639eb9e4addca886c51007cb2332d1f3e6c5b73b650904970",
+  "minAppVersion": "0.6.8",
+  "name": "Bilibili",
+  "description": "Bilibili video, series, and subscription support for FluxDown.",
+  "author": "gulanthys",
+  "homepage": "https://github.com/gulanthys/fluxdown-bilibili-bangumi",
+  "mirrors": [
+    "https://github.com/gulanthys/fluxdown-bilibili-bangumi/releases/download/v1.2.1/bilibili-bangumi-1.2.1.fxplug"
+  ],
+  "publishTime": "2026-11-19T15:48:33.000Z",
+  "yanked": "none",
+  "tags": [
+    "resolver",
+    "video",
+    "bilibili",
+    "bangumi",
+    "subscription"
+  ],
+  "permissions": [
+    "auth",
+    "tasks"
+  ],
+  "networkHosts": [],
+  "sigScheme": "none",
+  "sigstoreBundleRef": ""
+}

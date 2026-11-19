@@ -1,0 +1,27 @@
+{
+  "pluginId": "gulanthys@anime-archive",
+  "version": "1.6.3",
+  "sequence": 32,
+  "contentHash": "sha256:bdcde1367f1fd39d88edbeb5af3658df0555155041c7e05a54cccac51cbb6e92",
+  "minAppVersion": "0.6.5",
+  "name": "文件分类归档",
+  "description": "按下载文件的实际内容分类，归档到 FluxDown 内置分类配置的保存目录。",
+  "author": "gulanthys",
+  "homepage": "https://github.com/gulanthys/fluxdown-anime-archive",
+  "mirrors": [
+    "https://github.com/gulanthys/fluxdown-anime-archive/releases/download/v1.6.3/anime-archive-1.6.3.fxplug"
+  ],
+  "publishTime": "2026-11-19T17:08:27.000Z",
+  "yanked": "none",
+  "tags": [
+    "archive",
+    "anime",
+    "classification"
+  ],
+  "permissions": [
+    "archive"
+  ],
+  "networkHosts": [],
+  "sigScheme": "none",
+  "sigstoreBundleRef": ""
+}
