@@ -44,7 +44,7 @@
       "tags": ["resolver", "quark", "cloud-drive", "share"]
     },
     {
-      "id": "gulanthys@douyin",
+      "id": "gulanthys@fluxdown-douyin",
       "repo": "gulanthys/fluxdown-douyin",
       "tags": ["resolver", "video", "douyin", "live"]
     }
